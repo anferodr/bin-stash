@@ -22,7 +22,7 @@ public class RedisStash implements Stash {
     private final int expireAfter;
 
     RedisStash(RedisReactiveCommands<String, String> redisReactiveCommands,
-                       int expireAfter) {
+               int expireAfter) {
         this.redisReactiveCommands = redisReactiveCommands;
         this.expireAfter = expireAfter;
     }
@@ -153,18 +153,12 @@ public class RedisStash implements Stash {
         }
     }
 
-    private int computeTtl(int cadidateTtl) {
-        int computed;
-        if (cadidateTtl > 0) {
-            computed = cadidateTtl;
-        }
-        else if (cadidateTtl < 0 && this.expireAfter > 0) {
-            computed = this.expireAfter;
-        }
-        else {
-            computed = DEFAULT_PER_KEY_EXPIRATION_SECONDS;
-        }
-        return computed;
+
+    private int computeTtl(int candidateTtl) {
+        if (candidateTtl > 0) return candidateTtl;
+        if (candidateTtl == -1) return -1;
+        if (candidateTtl < 0 && expireAfter > 0) return expireAfter;
+        return DEFAULT_PER_KEY_EXPIRATION_SECONDS;
     }
 
 }
